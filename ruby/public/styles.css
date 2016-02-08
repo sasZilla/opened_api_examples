@@ -1,0 +1,7 @@
+.nav-tabs--aligned {
+  margin: 20px -15px;
+}
+
+.list-group-item--pointer {
+  cursor: pointer;
+}
