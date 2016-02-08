@@ -1,5 +1,21 @@
 ;(function(jQuery, window, undefined) {
   var App = {
+    /*
+      Use '/standard_groups', '/grade_groups', '/categories', '/standards', '/areas', '/subjects'
+      to fetch data from openedApi
+      get response like:
+        {
+          "standard_groups": [
+              {
+                  "id": 2,
+                  "name": "Common Core Language Arts",
+                  "title": "Common Core Language Arts",
+                  "count": 3669
+              },
+              ...
+          ]
+        }
+    */
     models: {
       standard_group: {
         active: null,
@@ -46,6 +62,10 @@
         subject: 'subjects'
       },
 
+      /*
+        Fetch data from server
+        Add params for search using previous taxonome levels
+      */
       fetch: function(modelName) {
         var params = {},
           model = App.models[modelName];
@@ -87,6 +107,7 @@
     ctrl: {
       init: function() {
         App.view.init();
+        /* before start load taxonomy roots "standard_groups", "areas" */
         this.load('standard_group');
         this.load('area');
       },
@@ -98,6 +119,9 @@
         });
       },
 
+      /*
+        If there is next taxonome level , then load it and render
+      */
       activate: function(modelName, elemName) {
         var nextChainModelName = App.models[modelName].nextChainModel;
         if (nextChainModelName) {
@@ -111,6 +135,9 @@
         }
       },
 
+      /*
+        Remove next models after current taxonome model
+      */
       resetActiveChain: function(modelName) {
         var nextChainModelName = App.models[modelName].nextChainModel;
         if (nextChainModelName) {
@@ -122,9 +149,13 @@
 
     view: {
       init: function() {
+        /* bind click events to load next taxonnomy model */
         this.bindEvents();
       },
 
+      /*
+        On click set active element and load next taxonomy model list
+      */
       bindEvents: function() {
         $('#container').on('click', 'li.canBeClickable', function(ev) {
           var $target = $(ev.target),
@@ -135,6 +166,11 @@
         });
       },
 
+      /*
+        Render function
+        render model list
+        set active element
+      */
       render: function(containerId, modelData) {
         var $container = $('#'+containerId);
         App.view.clear(containerId);
