@@ -1,13 +1,9 @@
-require 'base64'
 require 'json'
 require 'openssl'
-require 'securerandom'
 require 'sinatra'
 require 'sinatra/cross_origin'
-
 require 'net/http'
 require 'uri'
-
 
 enable :cross_origin
 set :port, 1337
@@ -32,10 +28,6 @@ end
 
 get '/' do
   send_file File.join('public/index.html')
-end
-
-get '/opened-api.js' do
-  send_file File.join('../../opened-api.js')
 end
 
 get '/standard_groups' do
