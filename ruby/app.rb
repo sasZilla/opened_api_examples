@@ -8,11 +8,15 @@ require 'uri'
 enable :cross_origin
 set :port, 1337
 
-PRODUCTION = 'https://partner.opened.com'
-MOCK_SERVER = 'https://private-anon-f19fb4f34-opened.apiary-mock.com'
+PROTOCOL = 'https'
+PRODUCTION_SERVER_DOMAIN = 'partner.opened.com'
+MOCK_SERVER_DOMAIN = 'private-anon-f19fb4f34-opened.apiary-mock.com'
+
+SERVER = "#{PROTOCOL}://#{MOCK_SERVER_DOMAIN}"
+SERVER_DOMAIN = MOCK_SERVER_DOMAIN
 
 def http_get(url,params=nil)
-  return Net::HTTP.get('private-anon-f19fb4f34-opened.apiary-mock.com', "#{url}?".concat(params.collect { |k,v| "#{k}=#{URI.escape(v.to_s)}" }.join('&'))) unless params.nil?
+  return Net::HTTP.get(SERVER_DOMAIN, "#{url}?".concat(params.collect { |k,v| "#{k}=#{URI.escape(v.to_s)}" }.join('&'))) unless params.nil?
   return Net::HTTP.get(URI.parse(url))
 end
 
@@ -31,7 +35,7 @@ get '/' do
 end
 
 get '/standard_groups' do
-  http_get("#{MOCK_SERVER}/1/standard_groups.json")
+  http_get("#{SERVER}/1/standard_groups.json")
 end
 
 get '/grade_groups' do
@@ -43,17 +47,17 @@ end
 get '/categories' do
   permitted_params = ['standard_group', 'grade_group']
   allowed_params = get_allowed_params(@params, permitted_params)
-  http_get("#{MOCK_SERVER}/1/categories.json",@params)
+  http_get("/1/categories.json",@params)
 end
 
 get '/standards' do
   permitted_params = ['standard_group', 'grade_group', 'category']
   allowed_params = get_allowed_params(@params, permitted_params)
-  http_get("#{MOCK_SERVER}/1/standards.json",@params)
+  http_get("/1/standards.json",@params)
 end
 
 get '/areas' do
-  http_get("#{MOCK_SERVER}/areas.json")
+  http_get("#{SERVER}/areas.json")
 end
 
 get '/subjects' do

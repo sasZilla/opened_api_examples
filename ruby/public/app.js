@@ -17,40 +17,44 @@
         }
     */
     models: {
+      grade_range: {
+
+      },
+
       standard_group: {
         active: null,
         content: [],
-        params: [],
+        dependencies: [],
         nextChainModel: 'grade_group'
       },
       grade_group: {
         active: null,
         content: [],
-        params: ['standard_group'],
+        dependencies: ['standard_group'],
         nextChainModel: 'category'
       },
       category: {
         active: null,
         content: [],
-        params: ['standard_group', 'grade_group'],
+        dependencies: ['standard_group', 'grade_group'],
         nextChainModel: 'standard'
       },
       standard: {
         active: null,
         content: [],
-        params: ['standard_group', 'grade_group', 'category']
+        dependencies: ['category']
       },
 
       area: {
         active: null,
         content: [],
-        params: [],
+        dependencies: [],
         nextChainModel: 'subject'
       },
       subject: {
         active: null,
         content: [],
-        params: ['area']
+        dependencies: ['area']
       },
 
       modelPath: {
@@ -69,12 +73,18 @@
       fetch: function(modelName) {
         var params = {},
           model = App.models[modelName];
-        model.params.forEach(function(param) {
+        model.dependencies.forEach(function(param) {
           var activeModel = App.models[param].active;
-          params[param] = activeModel.name || activeModel.title;
+          params[param] = activeModel.id;
         });
-        return $.getJSON(App.models.modelPath[modelName], params, function(data) {
-          App.models.setData(modelName, data);
+        return $.get(App.models.modelPath[modelName], params, function(data) {
+          var parsedData;
+          try {
+            parsedData = JSON.parse(data);
+          } catch(err) {
+            parsedData = [];
+          }
+          App.models.setData(modelName, parsedData);
         });
       },
 
