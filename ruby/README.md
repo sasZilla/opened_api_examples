@@ -1,4 +1,4 @@
-ng Started
+Getting Started
 -
 ## How do I run this project?
 You need ruby -v=2.2.2 has been installed    
